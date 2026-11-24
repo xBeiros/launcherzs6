@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net11.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+
+    <!-- App-Metadaten & Single-EXE Publish-Konfiguration -->
+    <AssemblyName>ZodiacSix-Launcher</AssemblyName>
+    <RootNamespace>WpfApp1</RootNamespace>
+    <AssemblyTitle>ZODIAC SIX Launcher</AssemblyTitle>
+    <Product>ZODIAC SIX Launcher</Product>
+    <Description>Offizieller ZODIAC SIX Roleplay Desktop Launcher</Description>
+    <Company>ZODIAC SIX Roleplay</Company>
+    <Copyright>© 2026 ZODIAC SIX Roleplay</Copyright>
+    <ApplicationIcon>Assets\ZodiacSix.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+  </PropertyGroup>
+
+  <!-- Globale Version automatisch aus version.json (Single Source of Truth) lesen -->
+  <PropertyGroup>
+    <VersionJsonPath Condition="'$(VersionJsonPath)' == ''">C:\Users\xBeiros\Herd\zodiac\public\launcher\version.json</VersionJsonPath>
+    <_VersionJsonContent Condition="Exists('$(VersionJsonPath)')">$([System.IO.File]::ReadAllText('$(VersionJsonPath)'))</_VersionJsonContent>
+    <_ParsedJsonVersion Condition="'$(_VersionJsonContent)' != ''">$([System.Text.RegularExpressions.Regex]::Match($(_VersionJsonContent), '"version"\s*:\s*"([^"]+)"').Groups[1].Value)</_ParsedJsonVersion>
+    <Version Condition="'$(Version)' == '' and '$(_ParsedJsonVersion)' != ''">$(_ParsedJsonVersion)</Version>
+    <Version Condition="'$(Version)' == ''">1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\*.png" />
+    <Resource Include="Assets\*.ico" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,50 @@
+<UserControl x:Class="WpfApp1.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:components="clr-namespace:WpfApp1.Components">
+    <Grid Margin="22,4,22,12">
+        <Grid.ColumnDefinitions>
+            <!-- Linke Spalte: Server-Karte & Systemcheck -->
+            <ColumnDefinition Width="328" />
+            <ColumnDefinition Width="16" />
+            <!-- Rechte Spalte: Hero-Banner, Einstellungen & Cache -->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Linke Spalte -->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="14" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <components:ServerCardControl Grid.Row="0" />
+            <components:SystemCheckControl Grid.Row="2" />
+        </Grid>
+
+        <!-- Rechte Spalte -->
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="14" />
+                <RowDefinition Height="218" />
+            </Grid.RowDefinitions>
+
+            <!-- Hero-Banner oben -->
+            <components:HeroBannerControl Grid.Row="0" />
+
+            <!-- Untere 2-Spalten-Zeile: Einstellungen & Cache -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.88*" />
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="1.12*" />
+                </Grid.ColumnDefinitions>
+
+                <components:LauncherSettingsCard Grid.Column="0" />
+                <components:CacheCardControl Grid.Column="2" />
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

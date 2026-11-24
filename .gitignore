@@ -1,0 +1,16 @@
+# Visual Studio & .NET Build-Artefakte
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.log
+*.pdb
+TestResults/
+publish/
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+*.tmp

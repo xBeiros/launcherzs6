@@ -1,0 +1,106 @@
+name: Build & Release ZodiacSix-Launcher
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release-Version (z. B. 1.0.5)'
+        required: true
+        default: '1.0.5'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Determine version
+        id: version
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $ver = "${{ github.event.inputs.version }}"
+          } else {
+            $ver = "${{ github.ref_name }}".TrimStart('v')
+          }
+          echo "value=$ver" >> $env:GITHUB_OUTPUT
+
+      - name: Setup .NET 11 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '11.0.x'
+          dotnet-quality: 'preview'
+
+      - name: Publish Single-File EXE
+        shell: pwsh
+        run: |
+          dotnet publish WpfApp1/WpfApp1.csproj `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            -p:Version=${{ steps.version.outputs.value }} `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:IncludeAllContentForSelfExtract=true `
+            -p:EnableCompressionInSingleFile=true `
+            -p:DebugType=None `
+            -p:DebugSymbols=false `
+            -o publish-out
+
+      - name: Upload unsigned artifact for SignPath
+        id: upload_unsigned
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-launcher
+          path: publish-out/ZodiacSix-Launcher.exe
+
+      - name: Sign with SignPath (when configured)
+        if: ${{ secrets.SIGNPATH_API_TOKEN != '' }}
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: release-signing
+          github-artifact-id: ${{ steps.upload_unsigned.outputs.artifact-id }}
+          artifact-configuration-slug: default
+          wait-for-completion: true
+          output-artifact-directory: publish-signed
+
+      - name: Select final executable & compute SHA-256
+        id: package
+        shell: pwsh
+        run: |
+          $signedExe = "publish-signed/ZodiacSix-Launcher.exe"
+          $exePath = if (Test-Path $signedExe) { $signedExe } else { "publish-out/ZodiacSix-Launcher.exe" }
+          $hash = (Get-FileHash -Path $exePath -Algorithm SHA256).Hash
+          "$hash  ZodiacSix-Launcher.exe" | Set-Content -Path "SHA256SUMS.txt" -Encoding ASCII
+          echo "exe_path=$exePath" >> $env:GITHUB_OUTPUT
+          echo "sha256=$hash" >> $env:GITHUB_OUTPUT
+
+      - name: Upload final release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZodiacSix-Launcher-v${{ steps.version.outputs.value }}
+          path: |
+            ${{ steps.package.outputs.exe_path }}
+            SHA256SUMS.txt
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ steps.package.outputs.exe_path }}
+            SHA256SUMS.txt
+          body: |
+            ## ZODIAC SIX Launcher v${{ steps.version.outputs.value }}
+            - **SHA-256**: `${{ steps.package.outputs.sha256 }}`
+            - **Download**: `ZodiacSix-Launcher.exe` (Windows 10/11 64-Bit Single-EXE)

@@ -1,0 +1,264 @@
+<UserControl x:Class="WpfApp1.Components.HeroBannerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Loaded="HeroBannerControl_Loaded"
+             Unloaded="HeroBannerControl_Unloaded">
+    <Border CornerRadius="12"
+            BorderBrush="{StaticResource BorderSubtleBrush}"
+            BorderThickness="1"
+            Background="{StaticResource SurfaceCardSolidBrush}">
+        <Grid>
+            <!-- Schicht 1: Crossfade-Image-Slider mit zwei Ebenen für weiche Übergänge -->
+            <Border CornerRadius="11" ClipToBounds="True">
+                <Grid>
+                    <!-- Vorheriges Bild (Hintergrund-Ebene für Crossfade) -->
+                    <Image x:Name="BackSlideImage"
+                           Stretch="UniformToFill"
+                           RenderOptions.BitmapScalingMode="HighQuality" />
+
+                    <!-- Aktuelles Bild mit sanftem Fade-In & Zoom -->
+                    <Image x:Name="FrontSlideImage"
+                           Stretch="UniformToFill"
+                           RenderTransformOrigin="0.5,0.5"
+                           RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.RenderTransform>
+                            <ScaleTransform x:Name="FrontSlideScale" ScaleX="1" ScaleY="1" />
+                        </Image.RenderTransform>
+                    </Image>
+
+                    <!-- Schicht 2: Dunkles Gradient-Overlay für optimale Text-Lesbarkeit -->
+                    <Border Background="{StaticResource HeroOverlayGradientBrush}" />
+                    <Border Background="{StaticResource HeroBottomFadeBrush}" />
+                </Grid>
+            </Border>
+
+            <!-- Schicht 3: Inhalt -->
+            <Grid Margin="30,24,26,22">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Obere Zeile: Eyebrow links & Koordinaten rechts -->
+                <Grid Grid.Row="0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <Border Width="18"
+                                Height="2"
+                                CornerRadius="1"
+                                Background="{StaticResource AccentGradientBrush}"
+                                VerticalAlignment="Center"
+                                Margin="0,0,10,0" />
+                        <TextBlock Text="{Binding HeroEyebrow}"
+                                   FontFamily="{StaticResource PrimaryFontFamily}"
+                                   FontSize="9.5"
+                                   FontWeight="SemiBold"
+                                   Foreground="#C5C9D2" />
+                    </StackPanel>
+
+                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top">
+                        <TextBlock Text="{Binding HeroCoordinates}"
+                                   FontFamily="{StaticResource MonoFontFamily}"
+                                   FontSize="9"
+                                   Foreground="#E3CEBF"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding HeroLocation}"
+                                   FontFamily="{StaticResource MonoFontFamily}"
+                                   FontSize="8.5"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   HorizontalAlignment="Right"
+                                   Margin="0,2,0,0" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Mitte: Große Headline (#FF5A5F -> #FF7F50 Gradient) & Untertitel -->
+                <StackPanel Grid.Row="1"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Left"
+                            Margin="0,6,0,10">
+                    <TextBlock Text="{Binding HeroHeadlineTop}"
+                               FontFamily="{StaticResource PrimaryFontFamily}"
+                               FontSize="42"
+                               FontWeight="Black"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               LineHeight="44" />
+                    <TextBlock Text="{Binding HeroHeadlineAccent}"
+                               FontFamily="{StaticResource PrimaryFontFamily}"
+                               FontSize="42"
+                               FontWeight="Black"
+                               Foreground="{StaticResource AccentGradientBrush}"
+                               LineHeight="44"
+                               Margin="0,-3,0,12" />
+
+                    <TextBlock Text="{Binding HeroSubtitleLine1}"
+                               FontFamily="{StaticResource PrimaryFontFamily}"
+                               FontSize="12.5"
+                               Foreground="#D8D4D0" />
+                    <TextBlock Text="{Binding HeroSubtitleLine2}"
+                               FontFamily="{StaticResource PrimaryFontFamily}"
+                               FontSize="12.5"
+                               Foreground="#B5B4B8"
+                               Margin="0,2,0,0" />
+                </StackPanel>
+
+                <!-- Untere Zeile: CTA-Button links & animierter Slide-Timer mit allen Punkten rechts -->
+                <Grid Grid.Row="2">
+                    <Button Style="{StaticResource PrimaryCtaButtonStyle}"
+                            Command="{Binding LaunchGameCommand}"
+                            HorizontalAlignment="Left"
+                            Width="288"
+                            Height="54">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Play-Dreieck -->
+                            <Path Grid.Column="0"
+                                  Data="M 3,2 L 13,8 L 3,14 Z"
+                                  Fill="#140D0B"
+                                  Width="10"
+                                  Height="11"
+                                  Stretch="Uniform"
+                                  VerticalAlignment="Center"
+                                  Margin="2,0,14,0" />
+
+                            <!-- Zweizeiliger CTA-Text -->
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding LaunchButtonTitle}"
+                                           FontFamily="{StaticResource PrimaryFontFamily}"
+                                           FontSize="12.5"
+                                           FontWeight="Black"
+                                           Foreground="#140D0B" />
+                                <TextBlock Text="{Binding LaunchButtonSubtitle}"
+                                           FontFamily="{StaticResource PrimaryFontFamily}"
+                                           FontSize="8.5"
+                                           FontWeight="SemiBold"
+                                           Foreground="#4A211C"
+                                           Margin="0,1,0,0" />
+                            </StackPanel>
+
+                            <!-- Pfeil rechts (↗) -->
+                            <TextBlock Grid.Column="2"
+                                       Text="↗"
+                                       FontFamily="{StaticResource PrimaryFontFamily}"
+                                       FontSize="13"
+                                       FontWeight="Bold"
+                                       Foreground="#2E1410"
+                                       VerticalAlignment="Center"
+                                       Margin="10,0,2,0" />
+                        </Grid>
+                    </Button>
+
+                    <!-- Animierter Slider-Timer + alle Slide-Punkte unten rechts -->
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom">
+
+                        <!-- Aktuelle Slide-Nummer (z. B. 01 / 04) -->
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    Margin="0,0,12,0">
+                            <TextBlock Text="{Binding ActiveSlideNumber}"
+                                       FontFamily="{StaticResource MonoFontFamily}"
+                                       FontSize="11"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource AccentGradientBrush}"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding TotalSlidesLabel}"
+                                       FontFamily="{StaticResource MonoFontFamily}"
+                                       FontSize="9.5"
+                                       Foreground="#7A7C84"
+                                       VerticalAlignment="Center"
+                                       Margin="3,1,0,0" />
+                        </StackPanel>
+
+                        <!-- Dynamische Punkte & animierter Timer-Balken für jeden Slide -->
+                        <ItemsControl x:Name="SlideDotsControl"
+                                      ItemsSource="{Binding HeroSlides}"
+                                      VerticalAlignment="Center">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Click="SlideDot_Click"
+                                            Tag="{Binding Index}"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Padding="3,6"
+                                            Cursor="Hand"
+                                            ToolTip="{Binding Location}"
+                                            FocusVisualStyle="{x:Null}">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="Transparent" Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+
+                                        <Grid Height="4" VerticalAlignment="Center">
+                                            <!-- Inaktiver Punkt -->
+                                            <Border x:Name="InactiveDot"
+                                                    Width="10"
+                                                    Height="3.5"
+                                                    CornerRadius="2"
+                                                    Background="#4DFFFFFF">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                            </Border>
+
+                                            <!-- Aktiver Slide: animierter Timer-Strich (#FF5A5F -> #FF7F50) -->
+                                            <Border x:Name="ActiveTrack"
+                                                    Width="36"
+                                                    Height="3.5"
+                                                    CornerRadius="2"
+                                                    Background="#38FFFFFF"
+                                                    ClipToBounds="True">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+
+                                                <Border x:Name="ActiveTimerFill"
+                                                        HorizontalAlignment="Stretch"
+                                                        CornerRadius="2"
+                                                        UseLayoutRounding="False"
+                                                        SnapsToDevicePixels="False"
+                                                        RenderTransformOrigin="0,0.5"
+                                                        Background="{StaticResource AccentGradientBrush}">
+                                                    <Border.RenderTransform>
+                                                        <ScaleTransform ScaleX="{Binding ProgressRatio}" ScaleY="1" />
+                                                    </Border.RenderTransform>
+                                                </Border>
+                                            </Border>
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>
