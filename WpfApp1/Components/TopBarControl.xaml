@@ -39,17 +39,6 @@
                                Foreground="{StaticResource TextSecondaryBrush}"
                                Margin="1,-1,0,0" />
                 </StackPanel>
-
-                <!-- Launcher-Kennung -->
-                <StackPanel Orientation="Horizontal"
-                            VerticalAlignment="Center"
-                            Margin="24,0,0,0">
-                    <TextBlock Text="LAUNCHER"
-                               FontFamily="{StaticResource PrimaryFontFamily}"
-                               FontSize="9.5"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource TextMutedBrush}" />
-                </StackPanel>
             </StackPanel>
 
             <!-- Mittlere Drag-Fläche -->

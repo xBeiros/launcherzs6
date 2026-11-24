@@ -16,19 +16,11 @@ namespace WpfApp1.Services
 
     /// <summary>
     /// Produktive FiveM-Service-Implementierung:
-    /// Ermittelt die reale Größe der FiveM-Cache-Ordner (cache, server-cache, server-cache-priv, nui-storage)
-    /// und leert sie sicher, ohne game-storage zu berühren.
+    /// Ermittelt die reale Größe des gesamten FiveM-\data\-Ordners (cache, server-cache,
+    /// server-cache-priv, nui-storage, usw.) und leert diesen komplett.
     /// </summary>
     public sealed class FiveMLauncherService : ILauncherService
     {
-        private static readonly string[] CacheSubFolders =
-        {
-            "cache",
-            "server-cache",
-            "server-cache-priv",
-            "nui-storage"
-        };
-
         public async Task<bool> LaunchServerAsync(string serverEndpoint, bool minimizeOnLaunch, CancellationToken cancellationToken = default)
         {
             await Task.Delay(600, cancellationToken);
@@ -50,18 +42,7 @@ namespace WpfApp1.Services
                     return 0.0;
                 }
 
-                foreach (var folderName in CacheSubFolders)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var folderPath = Path.Combine(dataDir, folderName);
-                    if (!Directory.Exists(folderPath))
-                    {
-                        continue;
-                    }
-
-                    DeleteDirectoryContentsSafely(folderPath, cancellationToken);
-                }
-
+                DeleteDirectoryContentsSafely(dataDir, cancellationToken);
                 return CalculateTotalCacheSizeGb(cancellationToken);
             }, cancellationToken);
         }
@@ -74,20 +55,7 @@ namespace WpfApp1.Services
                 return 0.0;
             }
 
-            long totalBytes = 0;
-
-            foreach (var folderName in CacheSubFolders)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                var folderPath = Path.Combine(dataDir, folderName);
-                if (!Directory.Exists(folderPath))
-                {
-                    continue;
-                }
-
-                totalBytes += GetDirectorySizeBytes(folderPath, cancellationToken);
-            }
-
+            var totalBytes = GetDirectorySizeBytes(dataDir, cancellationToken);
             return totalBytes / (1024.0 * 1024.0 * 1024.0);
         }
 
