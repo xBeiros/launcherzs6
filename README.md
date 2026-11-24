@@ -1,17 +1,16 @@
 # ZODIAC SIX Launcher
 
-Offizieller Open-Source Windows Desktop Launcher für **ZODIAC SIX Roleplay** ([zodiac.duran.li](https://zodiac.duran.li)).
+Official open-source Windows desktop launcher for **ZODIAC SIX Roleplay** ([zodiac.duran.li](https://zodiac.duran.li)).
 
-## Features
-- **Single-EXE Installer & Uninstaller**: Schnelle, saubere Installation unter `%LocalAppData%\ZodiacSixLauncher` inkl. Desktop-/Startmenü-Verknüpfungen und rückstandsfreier Deinstallation über Windows „Installierte Apps“.
-- **Automatischer Updater**: Prüft beim Start auf neue Releases via `https://zodiac.duran.li/launcher/version.json` inkl. SHA-256-Integritätsprüfung.
-- **Live Windows-Systemcheck**: Prüft lokal auf Grand Theft Auto V, FiveM, TeamSpeak 3, SaltyChat-Plugin und Discord.
-- **FiveM-Cache-Verwaltung**: Ermittelt die reale FiveM-Cache-Größe und leert die Cache-Ordner sicher (ohne `game-storage` zu berühren).
-- **Persistente Einstellungen**: Windows-Autostart und Launcher-Optionen werden sauber lokal gespeichert.
+## Overview & Features
+- **Single-EXE Installer & Uninstaller**: Installs cleanly to `%LocalAppData%\ZodiacSixLauncher` with optional Desktop/Start Menu shortcuts and full uninstallation via Windows "Installed Apps" (`--uninstall`).
+- **Automatic Updater**: Checks `https://zodiac.duran.li/launcher/version.json` on startup, verifies SHA-256 checksums, and updates the launcher atomically.
+- **Live System Check**: Verifies local installation status of Grand Theft Auto V, FiveM, TeamSpeak 3, SaltyChat plugin, and Discord.
+- **FiveM Cache Manager**: Calculates real FiveM cache size (`cache`, `server-cache`, `server-cache-priv`, `nui-storage`) and clears cache folders safely without touching `game-storage`.
+- **Persistent Settings**: Manages Windows autostart (`HKCU\...\Run`) and local user preferences.
 
-## Voraussetzungen & Build
-- Windows 10 / 11 (64-Bit)
-- .NET 11 SDK (`net11.0-windows`)
+## Build from Source
+Requirements: Windows 10/11 (x64), .NET 11 SDK (`net11.0-windows`).
 
 ```powershell
 dotnet publish WpfApp1\WpfApp1.csproj `
@@ -25,12 +24,17 @@ dotnet publish WpfApp1\WpfApp1.csproj `
 ## Code Signing Policy
 Free code signing provided by [SignPath.io](https://signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
 
-- **Committers & Reviewers**: Projekt-Maintainer des Repositories [`xBeiros/launcherzs6`](https://github.com/xBeiros/launcherzs6).
-- **Approvers**: Projekt-Owner (`xBeiros`).
-- **Build & Signing**: Alle signierten Releases werden ausschließlich reproduzierbar über GitHub Actions aus diesem öffentlichen Repository gebaut.
+- **Committers & Reviewers**: Kazim Duran ([`@xBeiros`](https://github.com/xBeiros))
+- **Approvers**: Kazim Duran ([`@xBeiros`](https://github.com/xBeiros))
+- **Build & Signing Process**: Signed binaries are built exclusively via reproducible GitHub Actions workflows from this public repository ([`.github/workflows/release.yml`](.github/workflows/release.yml)).
+- **Scope**: Only release binaries of `ZodiacSix-Launcher.exe` produced directly from tagged releases in this repository are submitted for signing.
 
-## Datenschutz / Privacy Policy
-Der ZODIAC SIX Launcher sendet **keine** Telemetrie-, Tracking- oder personenbezogenen Daten an Dritte. Es wird lediglich beim Start eine lesende HTTPS-Anfrage an `https://zodiac.duran.li/launcher/version.json` zur Update-Prüfung ausgeführt. Lokale Einstellungen werden ausschließlich lokal unter `%AppData%\ZodiacSixLauncher\settings.json` gespeichert.
+## Privacy Policy
+ZODIAC SIX Launcher does **not** collect, store, or transmit any personal data, telemetry, or analytics to third parties.
 
-## Lizenz
-Dieses Projekt steht unter der [MIT-Lizenz](LICENSE).
+- On startup, the application performs a read-only HTTPS GET request to `https://zodiac.duran.li/launcher/version.json` solely to check for launcher updates.
+- User preferences (such as minimize-on-launch and last cache-clear timestamp) are stored strictly locally in `%AppData%\ZodiacSixLauncher\settings.json`.
+- No user data is transferred to SignPath or any external tracking service.
+
+## License
+This project is licensed under the [MIT License](LICENSE).
